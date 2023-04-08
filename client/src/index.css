@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    input {
+        @apply bg-purple-100 border-2 border-gray-500 p-2 outline-none block mb-4;
+    }
+}
