@@ -1,65 +1,52 @@
-const express = require('express')
-const mysql = require('mysql')
+import express from 'express';
+import mongodb from './database/mongodb.js';
+import cors from 'cors';
 
-// to solve that weird ass error
-const cors = require('cors')
 
-// database connection
-const db = mysql.createConnection( {
-    user: 'root',
-    host: 'localhost',
-    database: 'contacts',
-    password: 'Amber2023',
-})
+const {MongoClient} = mongodb;
 
-// create the express app
-const app = express()
-app.use(cors())
+const app = express();
 
-db.connect( (err) => {
-    console.log("Connected")
-})
+app.use(cors());
+app.use(express.json());
 
-// middleware to send and receive json
-app.use(express.json())
 
-// create route
+const contactsCollection  = await mongodb.returnContactsCollection();
+
+
 app.post('/create', (req, res) => {
-    // get info from post request
-    const {firstname, lastname, phone, image_url, relationship} = req.body;
-    console.log(req.body)
+    const {
+        firstname,
+        lastname,
+        phone,
+        imageurl,
+        relationship  
+    } = req.body;
 
-    db.query(`insert into contacts (firstname, lastname, phone, image_url, relationship) VALUES ('${firstname}','${lastname}','${phone}','${image_url}','${relationship}')`, (err, result) => {
-        if(err) {
-            console.error(error)
-        }else {
-            console.log('New Contact Created')
+
+    contactsCollection.insertOne(req.body, (err, result) => {
+        /*
+             - Validate the different properties of the contact before adding to the database
+        */ 
+        
+        if (err) {
+            res.status(500).send('Error adding contact');
+        } else {
+            res.status(201).json('New Contact created successfully');
         }
-    })
-
-    res.send('Sending Info')
+  });
+  
 })
 
-// route for getting all contacts
-app.get('/contacts', (req, res) => {
-    db.query('select * from contacts', (err, result) => {
-        if(err) {
-            console.log(err)
-        }else {
-            res.send(result)
-        }
-    })
-
+app.get('/contacts', async (req, res) => {
+    res.json({...await contactsCollection.find().toArray()});
+    
 })
-
-
 
 app.get('/', (req, res) => {
-
-    res.send("HEllo World")
+    res.send("YOU ARE ON THE HOMEPAGE :)");
 })
 
 app.listen(3000, () => {
-
-    console.log("SERVER STARTED")
+    console.log("server started on PORT 3000")
 })
