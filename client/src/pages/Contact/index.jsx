@@ -1,34 +1,34 @@
-
 import axios from "axios"
 import { useState, useEffect } from "react"
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Contact() {
 
     const [contacts, setContacts] = useState([])
 
     useEffect( ()=> {
-                axios.get('http://localhost:3000/contacts')
+        
+        axios.get('http://localhost:3000/contacts')
+        .catch( (err) => {
+            console.error(err);
+        })
         .then( (response)=> {
-            console.log(response.data)
             setContacts(response.data)
         })
-        .then( (err) => {
-            console.log(err)
-        })
-    }, [contacts])
 
-    const cards = contacts.map( (contact, idx) => {
+        
+    }, [])
+
+    const cards = contacts.map((contact, idx) => {
         return (
-            <div key={idx} 
-                className=" border-gray-300 drop-shadow-md w-1/5 p-2 border-2 space-y-3" 
-            >
+            <div key={uuidv4()} 
+                className=" border-gray-300 drop-shadow-md w-1/5 p-2 border-2 space-y-3" >
                 <h1
                     className="font-bold text-2xl text-center"
-                >{contact.firstname} {contact.lastname}</h1> <hr />
-                <img src={contact.image_url} width="200px" height="200px" alt="" 
-                    className="rounded-full"
-                />
-                <p>{contact.phone}</p>
+                >{contact.firstName} {contact.lastName}</h1> <hr />
+                <img src={contact.imageUrl} onError={(e) => console.log(e)} />
+
+                <p>{contact.phone} {contact.imageUrl ? "" : "it doesn't exist"}</p>
                 {contact.relationship}
             </div>
         )

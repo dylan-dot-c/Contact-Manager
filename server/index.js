@@ -1,52 +1,55 @@
-import express from 'express';
-import mongodb from './database/mongodb.js';
-import cors from 'cors';
-
-
-const {MongoClient} = mongodb;
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import Contact from "./models/contact.model.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-
-const contactsCollection  = await mongodb.returnContactsCollection();
-
-
-app.post('/create', (req, res) => {
-    const {
-        firstname,
-        lastname,
-        phone,
-        imageurl,
-        relationship  
-    } = req.body;
-
-
-    contactsCollection.insertOne(req.body, (err, result) => {
-        /*
-             - Validate the different properties of the contact before adding to the database
-        */ 
-        
-        if (err) {
-            res.status(500).send('Error adding contact');
-        } else {
-            res.status(201).json('New Contact created successfully');
-        }
+mongoose
+  .connect("mongodb://localhost:27017/contacts", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("MongoDB Connected...");
+  })
+  .catch((err) => {
+    console.log(err);
   });
-  
-})
 
-app.get('/contacts', async (req, res) => {
-    res.json({...await contactsCollection.find().toArray()});
-    
-})
+app.post("/create", (req, res) => {
+  const {
+    firstname: firstName,
+    lastname: lastName,
+    phone,
+    imageurl: imageUrl,
+    relationship,
+  } = req.body;
 
-app.get('/', (req, res) => {
-    res.send("YOU ARE ON THE HOMEPAGE :)");
-})
+
+  const newContact = new Contact({
+    firstName,
+    lastName,
+    phone,
+    imageUrl,
+    relationship,
+  });
+
+  newContact.save();
+});
+
+app.get("/contacts", async (req, res) => {
+  const contacts = await Contact.find().exec();
+  res.json(contacts);
+});
+
+app.get("/", (req, res) => {
+  res.send("homepage :)");
+});
 
 app.listen(3000, () => {
-    console.log("server started on PORT 3000")
-})
+  console.log("server started on PORT 3000");
+});
