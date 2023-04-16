@@ -1,5 +1,20 @@
-import mongodb from "mongodb";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
+
+
+
+async function connectToDatabase() {
+  try {
+    await mongoose.connect('mongodb://localhost:27017/contactManager', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      autoCreate : true
+    });
+    console.log('Connected to MongoDB on port 27017');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+  }
+}
 
 async function returnContactsCollection() {
   dotenv.config();
@@ -29,4 +44,6 @@ async function returnContactsCollection() {
   }
 }
 
-export default { returnContactsCollection};
+
+
+export default {connectToDatabase, returnContactsCollection};

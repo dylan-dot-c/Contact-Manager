@@ -9,12 +9,16 @@ export default function Navbar() {
             path: '/',
         },
         {
-            name: 'Login',
-            path: '/login'
-        },
-        {
             name: 'Contacts',
             path: '/contacts'
+        },
+        {
+            name: 'ContactForm',
+            path: '/contact-form'
+        },
+        {
+            name: 'Login',
+            path: '/login'
         }
     ]
 
