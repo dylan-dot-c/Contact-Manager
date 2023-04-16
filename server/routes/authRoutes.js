@@ -21,7 +21,7 @@ authRouter.post('/login', async function(req, res) {
      if(!result){
         res.status(401).send("incorrect password")
      }
-     const token = jwt.sign({username}, 'jamariisthegoat');
+     const token = jwt.sign({username}, 'DYLAN');
      res.json({ token , user : user});
     }
 });
