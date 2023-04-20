@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 function DefaultHome() {
   return ( 
     <div className="flex flex-col justify-center items-center h-screen">
-      <h2 className="text-4xl mb-4 font-bold">Welcome to the website</h2>
-      <p className="text-xl mb-8">Please log in or create an account to access your personalized content.</p>
+      <h2 className="text-4xl mb-4 font-bold">Welcome to the Contact Manager</h2>
+      <p className="text-xl mb-8">Please log in or create an account to start connecting.</p>
       <div className="flex">
         <Link to="/login">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4">

@@ -9,6 +9,7 @@ import ContactForm from './pages/ContactForm'
 import Register from './pages/Register'
 import AuthContext from '../src/AuthContext.js';
 import DefaultHome from './pages/DefaultHome'
+import Logout from './pages/Logout'
 import axios from 'axios'
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
               ? <Contact />
               : <Navigate to={"/login"} />
           } />
+          <Route path='/logout' element={<Logout />} />
           <Route path='/register' element={<Register />} />
           <Route path='*' element={<Navigate to={"/"} />} />
         </Routes>

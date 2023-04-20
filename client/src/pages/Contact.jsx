@@ -6,7 +6,7 @@ import AuthenticationContext from "../AuthContext.js";
 
 export default function Contact() {
   const [contacts, setContacts] = useState([]);
-  const { user, setUser } = useContext(AuthenticationContext);
+  const { user } = useContext(AuthenticationContext);
 
   useEffect(() => {
     if (user.username) {
