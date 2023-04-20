@@ -2,52 +2,57 @@ import express from "express";
 import UserSchema from "../models/user.model.js";
 import jwt from "jsonwebtoken"
 import mongodb from "../database/mongodb.js";
+import dotenv from 'dotenv'
 
 const authRouter = express.Router();
+
+
 mongodb.connectToDatabase();
 
+dotenv.config();
+authRouter.post('/login', async function (req, res) {
 
-authRouter.post('/login', async function(req, res) {
+  const { username, password } = req.body;
+  const user = await UserSchema.findOne({ username });
 
-    const {username , password} = req.body;
-    const user = await UserSchema.findOne({username});
-    
-    if(!user){
-      res.status(404).send("user not found");
-    }else{
+  
+  if (!user) {
+    res.status(404).send("User not found");
+  } else {
+    const result = await user.comparePassword(password);
 
-     const result = await user.comparePassword(password);
-    
-     if(!result){
-        res.status(401).send("incorrect password")
-     }
-     const token = jwt.sign({username}, 'DYLAN');
-     res.json({ token , user : user});
+    if (!result) {
+      res.status(401).send("Incorrect password")
     }
-});
-
-
-
-authRouter.post('/register', async function(req, res) {
-  try {
-    const { username, password , firstName, lastName } = req.body;
-    const newUser = new UserSchema({ username, password , firstName, lastName });  
-    await newUser.save(); 
-    res.sendStatus(201);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    
+    const token = jwt.sign({ username }, process.env.ENCRYPTION_KEY);
+    res.json({ token, user: user });
   }
 });
 
 
-authRouter.get("/user/:username" , )
 
-authRouter.get("/username-duplicate" , async function(req,res){
-  const {username} = req.body;
-  const users = await UserSchema.find({username}).lean();
+
+authRouter.post('/register', async function (req, res) {
+
+  try {
+    const { username, password, firstName, lastName } = req.body;
+
   
-  console.log("Checking for duplicate emails")
-})
+    const newUser = new UserSchema({
+      username,
+      password,
+      firstName,
+      lastName
+    });
+
+    
+    await newUser.save();
+
+    res.status(201).json(newUser.toObject());
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 export default authRouter;

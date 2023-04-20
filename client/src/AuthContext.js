@@ -1,7 +1,5 @@
-import { createContext , useState } from "react";
+import { createContext} from "react";
 
-
-const AuthenticationContext = createContext(null);
-
+const AuthenticationContext = createContext({});
 
 export default AuthenticationContext;

@@ -7,66 +7,77 @@ export default function Register() {
         username: "",
         password: "",
         confirmationPassword: "",
-
     });
 
-    const userNameReference = useRef("")
-    const passwordReference = useRef("")
-    const passwordConfirmationReference = useRef("")
+    const userNameReference = useRef("");
+    const passwordReference = useRef("");
+    const firstNameReference = useRef("");
+    const lastNameReference = useRef("");
+    const passwordConfirmationReference = useRef("");
 
     async function usernameTaken(){
         axios.get('http://localhost:3000/auth/username-duplicate')      
     }
 
-    function isValidUsername(){
-    
-    }
-
-    async function isPasswordStrong(){
-    
-    }
-
-    function passwordStrengthValidator(){
-    
-    }
-
-    function isPasswordMatchingConfirmationPassword(){
-    
-    }
-    function handleFormSubmission(event){
+ 
+    async function handleFormSubmission(event){
         event.preventDefault();
-
+        
         const username = userNameReference.current.value;
         const password = passwordReference.current.value;
+        const firstName = firstNameReference.current.value;
+        const lastName = lastNameReference.current.value;
         const confirmationPassword = passwordConfirmationReference.current.value;
 
+        const notValidFirstName = !Boolean(firstName) || Boolean((/\d/.test(firstName)));
 
-        // ensure that no other user has registered with the same username
+        if (notValidFirstName){
+            console.log("the firstname is not valid");
+            return;
+        } 
 
+        const notValidLastName = !Boolean(lastName) || Boolean((/\d/.test(lastName)));
+        if (notValidLastName){
+            console.log("the lastname is not valid");
+            return;
+        } 
 
-
-        // ensure that the password is strong enough else return
-
-        // ensure that password is the same as the confirmation password else return
-        if(password != confirmationPassword){
-            // 
+        const notValidUser = !Boolean(username);
+        if(notValidUser){
+            console.log("The username does not exist");
+            return
         }
 
-        if(password)
+        const isInconsistentPassword = password != confirmationPassword;
+        if(isInconsistentPassword){
+            console.log("The password is inconsistent");
+            return;
+        }
 
+        try{  
+            await axios.post("http://localhost:3000/auth/register" , {firstName,lastName,username,password});
+        }
+        catch(error){
 
-
-        // otherwise, make a post request with the data
-        
-
-
-        console.log('submit button was clicked')
+            console.log("error creating new user");
+        }
+    
     }
 
     return (
         <form className="max-w-sm mx-auto mt-8" onSubmit={handleFormSubmission}     >
             <h1 className="text-3xl font-bold mb-4">Register</h1>
 
+            <label className="block mb-2">
+                <span className="text-gray-700">First Name:</span>
+                <input type="text" ref={firstNameReference} name="firstname" className="form-input mt-1 block w-full" />
+            </label>
+
+
+            <label className="block mb-2">
+                <span className="text-gray-700">Last Name:</span>
+                <input type="text" ref={lastNameReference} name="lastname" className="form-input mt-1 block w-full" />
+            </label>
             <label className="block mb-2">
                 <span className="text-gray-700">Username:</span>
                 <input type="text" ref={userNameReference} name="username" className="form-input mt-1 block w-full" />

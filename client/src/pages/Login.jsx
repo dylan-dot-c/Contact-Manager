@@ -1,8 +1,9 @@
-import AuthenticationContext from "../AuthContext";
+import axios from 'axios'
 
 import { useRef , useContext } from "react";
 
-import axios from 'axios'
+import AuthenticationContext from "../AuthContext";
+import { setTokenInAuthHeader } from "../utils/setAuthToken";
 
 export default function Login() {
 
@@ -10,7 +11,6 @@ export default function Login() {
     const passwordValue = useRef("");
 
     const {user , setUser} = useContext(AuthenticationContext);
-
    
       async function verifyUser(event){
         event.preventDefault()
@@ -19,14 +19,16 @@ export default function Login() {
         const password = passwordValue.current.value;
         
         try {
-          const response = await axios.post('http://localhost:3000/auth/login', {username, password});
+           
+        const response = await axios.post('http://localhost:3000/auth/login', {username, password});
           
-          const {token , user : returnedUser} = response.data;
+        const {token , user } = response.data;
 
           localStorage.setItem('token', token);
-          setUser(returnedUser);
           
+          setTokenInAuthHeader(token);
           
+          setUser(user);
           
         } catch (error) {
           console.error(error);

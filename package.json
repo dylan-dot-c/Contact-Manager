@@ -20,6 +20,7 @@
     "mongoose": "^7.0.3",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.22",
+    "react-toastify": "^9.1.2",
     "uuid": "^9.0.0"
   }
 }

@@ -2,12 +2,42 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Contact" }],
-  username: { type: String, required: true },
-  password: { type: String, unique: true, required: true },
+  firstName: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 2,
+    maxlength: 50
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 2,
+    maxlength: 50
+  },
+  contacts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Contact",
+    required: true
+  }],
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 20
+  },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 8,
+    maxlength: 20
+  }
 });
+
 
 userSchema.pre("save", function(next){ 
   const user = this;
